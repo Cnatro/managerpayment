@@ -1,11 +1,10 @@
 import { BaseEntity } from './base.entity';
 
-export class User extends BaseEntity {
+export class Category extends BaseEntity {
   constructor(
     public name: string,
-    public email: string,
-    public password: string,
     public color: string,
+    public icon: string,
   ) {
     super();
   }
