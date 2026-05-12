@@ -11,4 +11,7 @@ export class BudgetModel extends BaseModel {
 
   @Column('float')
   limit_amount!: number;
+
+  @Column()
+  user_id!: number;
 }

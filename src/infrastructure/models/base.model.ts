@@ -10,11 +10,11 @@ export abstract class BaseModel {
   id!: number;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updated_at!: Date;
 
   @Column({ default: false })
-  isDeleted!: boolean;
+  is_deleted!: boolean;
 }

@@ -4,6 +4,9 @@ import { BaseModel } from './base.model';
 @Entity('saving')
 export class SavingModel extends BaseModel {
   @Column()
+  user_id!: number;
+
+  @Column()
   month!: number;
 
   @Column()

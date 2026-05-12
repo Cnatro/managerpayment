@@ -14,4 +14,7 @@ export class IncomeModel extends BaseModel {
 
   @Column({ nullable: true })
   note!: string;
+
+  @Column({ type: 'date', nullable: true, default: () => 'CURRENT_DATE' })
+  date!: string;
 }
