@@ -120,6 +120,10 @@ export class ChartsQueryService {
     }));
   }
 
+  async getProcessMiniInSidebar(userId: number) {
+    return await this.incomeRepo.getProcessMiniInSidebar(userId);
+  }
+
   // ================= HELPERS =================
   private sum(list: any[], field: string) {
     return list.reduce((s, item) => s + Number(item[field] || 0), 0);

@@ -9,8 +9,8 @@ export class BudgetCommandService {
     private readonly budgetRepo: BudgetRepository,
   ) {}
 
-  create(dto: Budget) {
-    return this.budgetRepo.create(dto);
+  create(dto: Budget, userId: number) {
+    return this.budgetRepo.create({ ...dto, userId: userId });
   }
 
   update(dto: Budget) {

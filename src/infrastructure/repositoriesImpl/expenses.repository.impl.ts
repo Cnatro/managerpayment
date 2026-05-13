@@ -33,7 +33,16 @@ export class ExpensesRepositoryImpl implements ExpenseRepository {
   }
 
   async delete(id: number): Promise<void> {
-    await this.repo.delete(id);
+    const entity = await this.repo.findOne({
+      where: { id },
+    });
+
+    if (!entity) {
+      throw new Error('Category not found');
+    }
+
+    entity.is_deleted = true;
+    await this.repo.save(entity);
   }
 
   async findAll(): Promise<Expense[]> {

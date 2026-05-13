@@ -9,4 +9,5 @@ export interface IncomeRepository {
   sumAmountByUser(userId: number): Promise<number>;
   findTotalAmountInMonthByUser(userId: number): Promise<any>;
   findTotalAmountInWeekByUser(userId: number): Promise<any>;
+  getProcessMiniInSidebar(userId: number);
 }

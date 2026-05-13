@@ -4,14 +4,15 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import { ExpensesCommandService } from '../../core/services/command/expenses.command.service';
 import { ExpenseQueryService } from '../../core/services/query/expenses.query.service';
 import { Expense } from '../../core/entities/expenses.entity';
 import { JwtAuthGuard } from '../../core/services/auth/jwt.guard';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('Expenses')
 export class ExpenseController {
@@ -22,12 +23,12 @@ export class ExpenseController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() dto: Expense) {
-    return this.command.create(dto);
+  create(@Body() dto: Expense, @CurrentUser() user: any) {
+    return this.command.create(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Patch(':id')
   update(@Body() dto: Expense) {
     return this.command.update(dto);
   }

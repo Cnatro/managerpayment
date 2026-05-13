@@ -4,9 +4,11 @@ import { BudgetModel } from '../../infrastructure/models/budget.model';
 export class BudgetMapper {
   static toEntity(model: BudgetModel): Budget {
     const budget = new Budget(
-      model.category_id,
-      model.month,
+      model.name,
+      model.start_date,
+      model.end_date,
       model.limit_amount,
+      model.user_id,
     );
 
     budget.id = model.id;
@@ -20,9 +22,11 @@ export class BudgetMapper {
     const model = new BudgetModel();
 
     model.id = entity.id;
-    model.category_id = entity.categoryId;
-    model.month = entity.month;
+    model.start_date = entity.startDate;
+    model.end_date = entity.endDate;
     model.limit_amount = entity.limitAmount;
+    model.user_id = entity.userId;
+    model.name = entity.name;
 
     return model;
   }

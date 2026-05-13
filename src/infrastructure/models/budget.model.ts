@@ -4,10 +4,13 @@ import { BaseModel } from './base.model';
 @Entity('budgets')
 export class BudgetModel extends BaseModel {
   @Column()
-  category_id!: number;
+  name!: string;
 
   @Column()
-  month!: number;
+  start_date!: string;
+
+  @Column()
+  end_date!: string;
 
   @Column('float')
   limit_amount!: number;

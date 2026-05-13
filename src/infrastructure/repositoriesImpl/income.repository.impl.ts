@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/unbound-method */
@@ -92,5 +93,52 @@ export class IncomeRepositoryImpl implements IncomeRepository {
       .getRawMany();
 
     return result;
+  }
+
+  async getProcessMiniInSidebar(userId: number) {
+    const month = new Date().getMonth() + 1;
+
+    const data = await this.repo
+      .createQueryBuilder('income')
+
+      .leftJoin(
+        'expenses',
+        'expense',
+        `
+        expense.user_id = income.user_id
+        AND expense.is_deleted = false
+        AND income.month = EXTRACT(MONTH FROM expense.date::date)
+      `,
+      )
+
+      .select(['income.id AS id', 'income.amount AS amount'])
+
+      .addSelect('COALESCE(SUM(expense.amount), 0)', 'totalExpense')
+
+      .addSelect(
+        `
+      income.amount 
+      - COALESCE(SUM(expense.amount), 0)
+      `,
+        'used',
+      )
+
+      .where('income.month = :month', {
+        month,
+      })
+
+      .andWhere('income.is_deleted = false')
+
+      .andWhere('income.user_id = :userId', {
+        userId,
+      })
+
+      .groupBy('income.id')
+
+      .addGroupBy('income.amount')
+
+      .getRawMany();
+
+    return data;
   }
 }
