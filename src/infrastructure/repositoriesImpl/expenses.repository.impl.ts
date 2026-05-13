@@ -45,8 +45,8 @@ export class ExpensesRepositoryImpl implements ExpenseRepository {
     await this.repo.save(entity);
   }
 
-  async findAll(): Promise<Expense[]> {
-    const data = await this.repo.find();
+  async findAll(userId: number): Promise<Expense[]> {
+    const data = await this.repo.find({ where: { user_id: userId } });
     return data.map(ExpenseMapper.toEntity);
   }
 

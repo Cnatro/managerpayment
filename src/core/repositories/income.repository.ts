@@ -4,7 +4,7 @@ export interface IncomeRepository {
   create(data: Income): Promise<Income>;
   update(data: Income): Promise<Income>;
   delete(id: number): Promise<void>;
-  findAll(): Promise<Income[]>;
+  findAll(userId: number): Promise<Income[]>;
   findById(id: number): Promise<Income | null>;
   sumAmountByUser(userId: number): Promise<number>;
   findTotalAmountInMonthByUser(userId: number): Promise<any>;

@@ -46,7 +46,18 @@ export class BudgetRepositoryImpl implements BudgetRepository {
     await this.repo.save(entity);
   }
 
-  async findAll(query: BudgetFilter, userId: number): Promise<Budget[]> {
+  async findAll(): Promise<Budget[]> {
+    const data = await this.repo.find({
+      order: { id: 'DESC' },
+    });
+
+    return data.map(BudgetMapper.toEntity);
+  }
+
+  async findAllWithFilter(
+    query: BudgetFilter,
+    userId: number,
+  ): Promise<Budget[]> {
     const month = query.month ?? new Date().getMonth() + 1;
     const data = await this.repo
       .createQueryBuilder('budget')

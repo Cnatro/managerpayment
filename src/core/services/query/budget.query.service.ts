@@ -13,8 +13,12 @@ export class BudgetQueryService {
     private readonly budgetRepo: BudgetRepository,
   ) {}
 
-  findAll(query: BudgetFilter, userId: number) {
-    return this.budgetRepo.findAll(query, userId);
+  findAll() {
+    return this.budgetRepo.findAll();
+  }
+
+  async findAllWithFilter(query: BudgetFilter, userId: number) {
+    return this.budgetRepo.findAllWithFilter(query, userId);
   }
 
   async findById(id: number, userId: number) {

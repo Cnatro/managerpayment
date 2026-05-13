@@ -8,8 +8,8 @@ export class DeductionQueryService {
     private readonly deductionRepo: DeductionRepository,
   ) {}
 
-  findAll() {
-    return this.deductionRepo.findAll();
+  findAll(userId: number) {
+    return this.deductionRepo.findAll(userId);
   }
 
   findById(id: number) {

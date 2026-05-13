@@ -14,8 +14,8 @@ export class IncomeQueryService {
     private readonly expensesRepo: ExpenseRepository,
   ) {}
 
-  findAll() {
-    return this.incomeRepo.findAll();
+  findAll(userId: number) {
+    return this.incomeRepo.findAll(userId);
   }
 
   findById(id: number) {

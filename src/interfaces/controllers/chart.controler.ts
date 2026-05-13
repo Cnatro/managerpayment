@@ -10,26 +10,26 @@ export class ChartsController {
 
   @UseGuards(JwtAuthGuard)
   @Get('weekly')
-  getWeekly() {
-    return this.chartsService.getWeeklyChart();
+  getWeekly(@CurrentUser() user: any) {
+    return this.chartsService.getWeeklyChart(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('monthly')
-  getMonthly() {
-    return this.chartsService.getMonthlyChart();
+  getMonthly(@CurrentUser() user: any) {
+    return this.chartsService.getMonthlyChart(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('categories')
-  getCategories() {
-    return this.chartsService.getCategoryChart();
+  getCategories(@CurrentUser() user: any) {
+    return this.chartsService.getCategoryChart(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('dashboard')
-  getDashboard() {
-    return this.chartsService.getDashboardData();
+  getDashboard(@CurrentUser() user: any) {
+    return this.chartsService.getDashboardData(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)

@@ -46,8 +46,8 @@ export class IncomeRepositoryImpl implements IncomeRepository {
     await this.repo.save(entity);
   }
 
-  async findAll(): Promise<Income[]> {
-    const data = await this.repo.find();
+  async findAll(userId: number): Promise<Income[]> {
+    const data = await this.repo.find({ where: { user_id: userId } });
     return data.map(IncomeMapper.toEntity);
   }
 

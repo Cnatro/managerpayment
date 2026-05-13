@@ -25,12 +25,12 @@ export class ChartsQueryService {
   ) {}
 
   // ================= DASHBOARD =================
-  async getDashboardData() {
+  async getDashboardData(userId: number) {
     const [expenses, incomes, savings, deductions] = await Promise.all([
-      this.expenseRepo.findAll(),
-      this.incomeRepo.findAll(),
-      this.savingRepo.findAll(),
-      this.deductionRepo.findAll(),
+      this.expenseRepo.findAll(userId),
+      this.incomeRepo.findAll(userId),
+      this.savingRepo.findAll(userId),
+      this.deductionRepo.findAll(userId),
     ]);
 
     const totalIncome = this.sum(incomes, 'amount');
@@ -58,8 +58,8 @@ export class ChartsQueryService {
   }
 
   // ================= WEEKLY CHART =================
-  async getWeeklyChart() {
-    const expenses = await this.expenseRepo.findAll();
+  async getWeeklyChart(userId: number) {
+    const expenses = await this.expenseRepo.findAll(userId);
 
     const grouped = new Map<number, number>();
 
@@ -80,8 +80,8 @@ export class ChartsQueryService {
   }
 
   // ================= MONTHLY CHART =================
-  async getMonthlyChart() {
-    const expenses = await this.expenseRepo.findAll();
+  async getMonthlyChart(userId: number) {
+    const expenses = await this.expenseRepo.findAll(userId);
 
     const grouped = new Map<number, number>();
 
@@ -104,8 +104,8 @@ export class ChartsQueryService {
   }
 
   // ================= CATEGORY CHART =================
-  async getCategoryChart() {
-    const expenses = await this.expenseRepo.findAll();
+  async getCategoryChart(userId: number) {
+    const expenses = await this.expenseRepo.findAll(userId);
 
     const grouped = new Map<number, number>();
 

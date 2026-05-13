@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Body,
   Controller,
@@ -41,8 +42,8 @@ export class ExpenseController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.query.findAll();
+  findAll(@CurrentUser() user: any) {
+    return this.query.findAll(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)

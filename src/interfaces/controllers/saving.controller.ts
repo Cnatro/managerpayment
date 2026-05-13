@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Body,
   Controller,
@@ -12,6 +13,7 @@ import { SavingCommandService } from '../../core/services/command/saving.command
 import { SavingQueryService } from '../../core/services/query/saving.query.service';
 import { Saving } from '../../core/entities/saving.entity';
 import { JwtAuthGuard } from '../../core/services/auth/jwt.guard';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('Savings')
 export class SavingController {
@@ -40,8 +42,8 @@ export class SavingController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.query.findAll();
+  findAll(@CurrentUser() user: any) {
+    return this.query.findAll(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)

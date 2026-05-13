@@ -8,8 +8,8 @@ export class SavingQueryService {
     private readonly savingRepo: SavingRepository,
   ) {}
 
-  findAll() {
-    return this.savingRepo.findAll();
+  findAll(userId: number) {
+    return this.savingRepo.findAll(userId);
   }
 
   findById(id: number) {

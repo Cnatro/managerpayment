@@ -8,8 +8,8 @@ export class ExpenseQueryService {
     private readonly expenseRepo: ExpenseRepository,
   ) {}
 
-  findAll() {
-    return this.expenseRepo.findAll();
+  findAll(userId: number) {
+    return this.expenseRepo.findAll(userId);
   }
 
   findById(id: number) {

@@ -6,6 +6,7 @@ export interface BudgetRepository {
   create(data: Budget): Promise<Budget>;
   update(data: Budget): Promise<Budget>;
   delete(id: number): Promise<void>;
-  findAll(query: BudgetFilter, userId: number): Promise<Budget[]>;
+  findAllWithFilter(query: BudgetFilter, userId: number): Promise<Budget[]>;
   findById(id: number, userId: number): Promise<any | null>;
+  findAll(): Promise<Budget[]>;
 }

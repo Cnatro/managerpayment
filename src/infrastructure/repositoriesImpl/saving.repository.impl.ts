@@ -36,8 +36,8 @@ export class SavingRepositoryImpl implements SavingRepository {
     await this.repo.delete(id);
   }
 
-  async findAll(): Promise<Saving[]> {
-    const data = await this.repo.find();
+  async findAll(userId: number): Promise<Saving[]> {
+    const data = await this.repo.find({ where: { user_id: userId } });
     return data.map(SavingMapper.toEntity);
   }
 

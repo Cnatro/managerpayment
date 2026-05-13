@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Body,
   Controller,
@@ -12,6 +13,7 @@ import { DeductionCommandService } from '../../core/services/command/deduction.c
 import { DeductionQueryService } from '../../core/services/query/deduction.query.service';
 import { Deduction } from '../../core/entities/deductions.entity';
 import { JwtAuthGuard } from '../../core/services/auth/jwt.guard';
+import { CurrentUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('Deductions')
 export class DeductionController {
@@ -40,8 +42,8 @@ export class DeductionController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.query.findAll();
+  findAll(@CurrentUser() user: any) {
+    return this.query.findAll(Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)

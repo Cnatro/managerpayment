@@ -34,8 +34,8 @@ export class DeductionRepositoryImpl implements DeductionRepository {
     await this.repo.delete(id);
   }
 
-  async findAll(): Promise<Deduction[]> {
-    const data = await this.repo.find();
+  async findAll(userId: number): Promise<Deduction[]> {
+    const data = await this.repo.find({ where: { user_id: userId } });
     return data.map(DeductionMapper.toEntity);
   }
 

@@ -45,7 +45,7 @@ export class BudgetController {
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@Query() query: BudgetFilter, @CurrentUser() user: any) {
-    return this.query.findAll(query, Number(user.id));
+    return this.query.findAllWithFilter(query, Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)
