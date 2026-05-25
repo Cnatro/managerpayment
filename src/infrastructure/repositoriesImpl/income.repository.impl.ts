@@ -63,6 +63,7 @@ export class IncomeRepositoryImpl implements IncomeRepository {
       .where('income.user_id = :userId', {
         userId,
       })
+      .andWhere('income.is_deleted = false')
       .getRawOne();
 
     return Number(result.total || 0);
@@ -74,6 +75,7 @@ export class IncomeRepositoryImpl implements IncomeRepository {
       .select(`TO_CHAR(income.date, 'MM/YYYY')`, 'month')
       .addSelect('SUM(income.amount)', 'value')
       .where('income.user_id = :userId', { userId })
+      .andWhere('income.is_deleted = false')
       .groupBy(`TO_CHAR(income.date, 'MM/YYYY')`)
       .orderBy(`MIN(income.date)`, 'ASC')
       .getRawMany();
@@ -89,6 +91,7 @@ export class IncomeRepositoryImpl implements IncomeRepository {
       .addSelect('income.note', 'note')
       .addSelect('income.date', 'date')
       .where('income.user_id = :userId', { userId })
+      .andWhere('income.is_deleted = false')
       .orderBy('income.date', 'DESC')
       .getRawMany();
 
@@ -117,6 +120,17 @@ export class IncomeRepositoryImpl implements IncomeRepository {
       )
 
       .addSelect(
+        `( 
+      SELECT COALESCE(SUM(deduction.amount), 0)
+      FROM deductions deduction
+      WHERE deduction.user_id = income.user_id
+        AND deduction.is_deleted = false
+        AND deduction.month = income.month
+    )`,
+        'totalDeduction',
+      )
+
+      .addSelect(
         `
     SUM(income.amount) - (
       SELECT COALESCE(SUM(expense.amount), 0)
@@ -124,7 +138,13 @@ export class IncomeRepositoryImpl implements IncomeRepository {
       WHERE expense.user_id = income.user_id
         AND expense.is_deleted = false
         AND EXTRACT(MONTH FROM expense.date::date) = income.month
-    )
+    ) - (
+        SELECT COALESCE(SUM(deduction.amount), 0)
+        FROM deductions deduction
+        WHERE deduction.user_id = income.user_id
+          AND deduction.is_deleted = false
+          AND deduction.month = income.month
+      )
     `,
         'used',
       )

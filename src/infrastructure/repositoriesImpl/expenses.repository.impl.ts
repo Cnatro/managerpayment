@@ -46,7 +46,9 @@ export class ExpensesRepositoryImpl implements ExpenseRepository {
   }
 
   async findAll(userId: number): Promise<Expense[]> {
-    const data = await this.repo.find({ where: { user_id: userId } });
+    const data = await this.repo.find({
+      where: { user_id: userId, is_deleted: false },
+    });
     return data.map(ExpenseMapper.toEntity);
   }
 
@@ -62,6 +64,7 @@ export class ExpensesRepositoryImpl implements ExpenseRepository {
       .where('expense.user_id = :userId', {
         userId,
       })
+      .andWhere('expense.is_deleted = false')
       .getRawOne();
 
     return Number(result.total || 0);

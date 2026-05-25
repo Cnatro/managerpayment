@@ -8,4 +8,5 @@ export interface DeductionRepository {
   findAll(userId: number): Promise<Deduction[]>;
   findById(id: number): Promise<Deduction | null>;
   findAllWithFilter(userId: number, query?: DeductionFilter): Promise<any>;
+  sumAmountByUser(userId: number): Promise<number>;
 }

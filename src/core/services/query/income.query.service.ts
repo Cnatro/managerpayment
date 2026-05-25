@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Inject, Injectable } from '@nestjs/common';
 import type { IncomeRepository } from '../../repositories/income.repository';
 import type { ExpenseRepository } from '../../repositories/expenses.repository';
+import type { DeductionRepository } from '../../repositories/deductions.repository';
 
 @Injectable()
 export class IncomeQueryService {
@@ -12,6 +14,9 @@ export class IncomeQueryService {
 
     @Inject('ExpenseRepository')
     private readonly expensesRepo: ExpenseRepository,
+
+    @Inject('DeductionRepository')
+    private readonly deductionRepo: DeductionRepository,
   ) {}
 
   findAll(userId: number) {
@@ -35,12 +40,17 @@ export class IncomeQueryService {
       Number(user.id),
     );
 
+    const totalDeduction = await this.deductionRepo.sumAmountByUser(
+      Number(user.id),
+    );
+
     const currentMonth = new Date().getMonth() + 1;
 
     return {
-      balance: totalIncome - totalExpense,
+      balance: totalIncome - totalExpense - totalDeduction,
       income: totalIncome,
       expense: totalExpense,
+      deduction: totalDeduction,
       carrots: 14,
 
       currentMonth: currentMonth,

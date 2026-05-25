@@ -7,9 +7,13 @@ import { IncomeQueryService } from '../../core/services/query/income.query.servi
 import { IncomeRepositoryImpl } from '../../infrastructure/repositoriesImpl/income.repository.impl';
 import { ExpenseModel } from '../../infrastructure/models/expense.model';
 import { ExpensesRepositoryImpl } from '../../infrastructure/repositoriesImpl/expenses.repository.impl';
+import { DeductionRepositoryImpl } from '../../infrastructure/repositoriesImpl/deductions.repository.impl';
+import { DeductionModel } from '../../infrastructure/models/deduction.model';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([IncomeModel, ExpenseModel])],
+  imports: [
+    TypeOrmModule.forFeature([IncomeModel, ExpenseModel, DeductionModel]),
+  ],
   controllers: [IncomeController],
   providers: [
     ImcomeCommandService,
@@ -21,6 +25,10 @@ import { ExpensesRepositoryImpl } from '../../infrastructure/repositoriesImpl/ex
     {
       provide: 'ExpenseRepository',
       useClass: ExpensesRepositoryImpl,
+    },
+    {
+      provide: 'DeductionRepository',
+      useClass: DeductionRepositoryImpl,
     },
   ],
   exports: ['IncomeRepository'],

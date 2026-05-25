@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -104,5 +106,18 @@ export class DeductionRepositoryImpl implements DeductionRepository {
 
       totalPages: Math.ceil(total / size),
     };
+  }
+
+  async sumAmountByUser(userId: number): Promise<number> {
+    const result = await this.repo
+      .createQueryBuilder('deduction')
+      .select('SUM(deduction.amount)', 'total')
+      .where('deduction.user_id = :userId', {
+        userId,
+      })
+      .andWhere('deduction.is_deleted = false')
+      .getRawOne();
+
+    return Number(result.total || 0);
   }
 }
