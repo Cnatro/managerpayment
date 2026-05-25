@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { CategoryModel } from '../models/category.model';
 import { Category } from '../../core/entities/categories.entity';
@@ -70,5 +70,15 @@ export class CategoryRepositoryImpl implements CategoryRepository {
     if (!data) return null;
 
     return CategoryMapper.toEntity(data);
+  }
+
+  async findAllInIds(ids: number[]): Promise<Category[]> {
+    const data = await this.repo.find({
+      where: {
+        id: In(ids),
+      },
+    });
+
+    return data.map(CategoryMapper.toEntity);
   }
 }

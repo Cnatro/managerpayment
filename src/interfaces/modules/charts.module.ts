@@ -10,6 +10,8 @@ import { ExpenseModel } from '../../infrastructure/models/expense.model';
 import { IncomeModel } from '../../infrastructure/models/income.model';
 import { SavingModel } from '../../infrastructure/models/saving.model';
 import { DeductionModel } from '../../infrastructure/models/deduction.model';
+import { CategoryRepositoryImpl } from '../../infrastructure/repositoriesImpl/category.repository.impl';
+import { CategoryModel } from '../../infrastructure/models/category.model';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { DeductionModel } from '../../infrastructure/models/deduction.model';
       IncomeModel,
       SavingModel,
       DeductionModel,
+      CategoryModel,
     ]),
   ],
   controllers: [ChartsController],
@@ -39,6 +42,10 @@ import { DeductionModel } from '../../infrastructure/models/deduction.model';
     {
       provide: 'DeductionRepository',
       useClass: DeductionRepositoryImpl,
+    },
+    {
+      provide: 'CategoryRepository',
+      useClass: CategoryRepositoryImpl,
     },
   ],
   exports: [ChartsQueryService],

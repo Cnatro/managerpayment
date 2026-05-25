@@ -9,8 +9,8 @@ export class DeductionCommandService {
     private readonly deductionRepo: DeductionRepository,
   ) {}
 
-  create(dto: Deduction) {
-    return this.deductionRepo.create(dto);
+  create(dto: Deduction, userId: number) {
+    return this.deductionRepo.create({ ...dto, userId: userId });
   }
 
   update(dto: Deduction) {

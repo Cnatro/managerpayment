@@ -1,4 +1,5 @@
 import { Deduction } from '../entities/deductions.entity';
+import { DeductionFilter } from '../services/dto/filters/deductionFilter';
 
 export interface DeductionRepository {
   create(data: Deduction): Promise<Deduction>;
@@ -6,4 +7,5 @@ export interface DeductionRepository {
   delete(id: number): Promise<void>;
   findAll(userId: number): Promise<Deduction[]>;
   findById(id: number): Promise<Deduction | null>;
+  findAllWithFilter(userId: number, query?: DeductionFilter): Promise<any>;
 }

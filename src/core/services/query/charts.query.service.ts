@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -7,6 +9,8 @@ import type { ExpenseRepository } from '../../repositories/expenses.repository';
 import type { IncomeRepository } from '../../repositories/income.repository';
 import type { SavingRepository } from '../../repositories/saving.repository';
 import type { DeductionRepository } from '../../repositories/deductions.repository';
+import { ChartFilter } from '../dto/filters/chartFilter';
+import type { CategoryRepository } from '../../repositories/category.repository';
 
 @Injectable()
 export class ChartsQueryService {
@@ -22,6 +26,9 @@ export class ChartsQueryService {
 
     @Inject('DeductionRepository')
     private readonly deductionRepo: DeductionRepository,
+
+    @Inject('CategoryRepository')
+    private readonly categoryRepo: CategoryRepository,
   ) {}
 
   // ================= DASHBOARD =================
@@ -32,6 +39,15 @@ export class ChartsQueryService {
       this.savingRepo.findAll(userId),
       this.deductionRepo.findAll(userId),
     ]);
+
+    const categoryIds = expenses.map((expense) => expense.categoryId);
+    const categories = await this.categoryRepo.findAllInIds([
+      ...new Set(categoryIds),
+    ]);
+
+    const categoryMap = new Map(
+      categories.map((category) => [category.id, category.name]),
+    );
 
     const totalIncome = this.sum(incomes, 'amount');
     const totalExpenses = this.sum(expenses, 'amount');
@@ -47,7 +63,10 @@ export class ChartsQueryService {
       remainingBalance:
         totalIncome - totalExpenses - totalSavings - totalDeductions,
 
-      recentExpenses: expenses.slice(-5),
+      recentExpenses: expenses.slice(-5).map((expense) => ({
+        ...expense,
+        categoryName: categoryMap.get(expense.categoryId) || 'Không xác định',
+      })),
 
       savingsSummary: savings.map((s) => ({
         type: s.type,
@@ -79,26 +98,61 @@ export class ChartsQueryService {
     return this.addTrend(result);
   }
 
-  // ================= MONTHLY CHART =================
-  async getMonthlyChart(userId: number) {
+  // ================= PERIOD CHART =================
+  async getChartByPeriod(filter: ChartFilter, userId: number) {
     const expenses = await this.expenseRepo.findAll(userId);
 
     const grouped = new Map<number, number>();
 
     for (const e of expenses) {
       const date = new Date(e.date);
-      const month = date.getMonth() + 1;
 
-      grouped.set(month, (grouped.get(month) || 0) + Number(e.amount || 0));
+      let key: number;
+      let label: string;
+
+      switch (filter.period) {
+        case 'day':
+          key = date.getDate();
+          label = `Ngày ${key}`;
+          break;
+
+        case 'week':
+          key = Number(e.week);
+          label = `Tuần ${key}`;
+          break;
+
+        case 'month':
+          key = date.getMonth() + 1;
+          label = `T${key}`;
+          break;
+
+        case 'year':
+          key = date.getFullYear();
+          label = `${key}`;
+          break;
+
+        default:
+          key = date.getMonth() + 1;
+          label = `T${key}`;
+      }
+
+      grouped.set(key, (grouped.get(key) || 0) + Number(e.amount || 0));
     }
 
     const result = Array.from(grouped.entries())
-      .map(([month, amount]) => ({
-        month,
-        label: `T${month}`,
+      .map(([key, amount]) => ({
+        value: key,
+        label:
+          filter.period === 'day'
+            ? `Ngày ${key}`
+            : filter.period === 'week'
+              ? `Tuần ${key}`
+              : filter.period === 'month'
+                ? `T${key}`
+                : `${key}`,
         amount,
       }))
-      .sort((a, b) => a.month - b.month);
+      .sort((a, b) => a.value - b.value);
 
     return this.addTrend(result);
   }

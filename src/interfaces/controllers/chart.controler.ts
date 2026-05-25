@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ChartsQueryService } from '../../core/services/query/charts.query.service';
 import { JwtAuthGuard } from '../../core/services/auth/jwt.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { ChartFilter } from '../../core/services/dto/filters/chartFilter';
 
 @Controller('charts')
 export class ChartsController {
@@ -15,9 +16,9 @@ export class ChartsController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('monthly')
-  getMonthly(@CurrentUser() user: any) {
-    return this.chartsService.getMonthlyChart(Number(user.id));
+  @Get()
+  getMonthly(@Query() query: ChartFilter, @CurrentUser() user: any) {
+    return this.chartsService.getChartByPeriod(query, Number(user.id));
   }
 
   @UseGuards(JwtAuthGuard)

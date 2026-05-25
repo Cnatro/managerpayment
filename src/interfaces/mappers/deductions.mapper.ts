@@ -6,7 +6,7 @@ export class DeductionMapper {
     const deduction = new Deduction(
       model.user_id,
       model.month,
-      model.category,
+      model.category_id,
       model.amount,
       model.note,
     );
@@ -22,7 +22,7 @@ export class DeductionMapper {
     model.id = entity.id;
     model.user_id = entity.userId;
     model.month = entity.month;
-    model.category = entity.category;
+    model.category_id = entity.categoryId;
     model.amount = entity.amount;
     model.note = entity.note;
 

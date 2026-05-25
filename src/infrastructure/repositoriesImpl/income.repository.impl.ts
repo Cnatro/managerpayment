@@ -101,43 +101,45 @@ export class IncomeRepositoryImpl implements IncomeRepository {
     const data = await this.repo
       .createQueryBuilder('income')
 
-      .leftJoin(
-        'expenses',
-        'expense',
-        `
-        expense.user_id = income.user_id
+      .select('income.month', 'month')
+
+      .addSelect('SUM(income.amount)', 'totalIncome')
+
+      .addSelect(
+        `( 
+      SELECT COALESCE(SUM(expense.amount), 0)
+      FROM expenses expense
+      WHERE expense.user_id = income.user_id
         AND expense.is_deleted = false
-        AND income.month = EXTRACT(MONTH FROM expense.date::date)
-      `,
+        AND EXTRACT(MONTH FROM expense.date::date) = income.month
+    )`,
+        'totalExpense',
       )
-
-      .select(['income.id AS id', 'income.amount AS amount'])
-
-      .addSelect('COALESCE(SUM(expense.amount), 0)', 'totalExpense')
 
       .addSelect(
         `
-      income.amount 
-      - COALESCE(SUM(expense.amount), 0)
-      `,
+    SUM(income.amount) - (
+      SELECT COALESCE(SUM(expense.amount), 0)
+      FROM expenses expense
+      WHERE expense.user_id = income.user_id
+        AND expense.is_deleted = false
+        AND EXTRACT(MONTH FROM expense.date::date) = income.month
+    )
+    `,
         'used',
       )
 
-      .where('income.month = :month', {
-        month,
-      })
+      .where('income.month = :month', { month })
+
+      .andWhere('income.user_id = :userId', { userId })
 
       .andWhere('income.is_deleted = false')
 
-      .andWhere('income.user_id = :userId', {
-        userId,
-      })
+      .groupBy('income.month')
 
-      .groupBy('income.id')
+      .addGroupBy('income.user_id')
 
-      .addGroupBy('income.amount')
-
-      .getRawMany();
+      .getRawOne();
 
     return data;
   }

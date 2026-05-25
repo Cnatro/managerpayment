@@ -6,4 +6,5 @@ export interface CategoryRepository {
   delete(id: number): Promise<void>;
   findAll(): Promise<Category[]>;
   findById(id: number): Promise<Category | null>;
+  findAllInIds(ids: number[]): Promise<Category[]>;
 }

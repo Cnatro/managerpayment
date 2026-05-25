@@ -2,7 +2,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { ExpenseRepository } from '../../repositories/expenses.repository';
 import { Expense } from '../../entities/expenses.entity';
-import { getISOWeek } from 'date-fns';
+import { getWeekOfMonth } from 'date-fns';
 
 @Injectable()
 export class ExpensesCommandService {
@@ -16,7 +16,7 @@ export class ExpensesCommandService {
 
     const month = date.getMonth() + 1;
 
-    const week = getISOWeek(date);
+    const week = getWeekOfMonth(date);
     return this.expensesRepo.create({
       ...dto,
       userId: Number(user.id),

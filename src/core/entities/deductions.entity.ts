@@ -4,7 +4,7 @@ export class Deduction extends BaseEntity {
   constructor(
     public userId: number,
     public month: number,
-    public category: string,
+    public categoryId: number,
     public amount: number,
     public note: string,
   ) {

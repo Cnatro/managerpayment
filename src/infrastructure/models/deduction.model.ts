@@ -1,5 +1,6 @@
-import { Entity, Column } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { BaseModel } from './base.model';
+import { CategoryModel } from './category.model';
 
 @Entity('deductions')
 export class DeductionModel extends BaseModel {
@@ -10,11 +11,15 @@ export class DeductionModel extends BaseModel {
   month!: number;
 
   @Column()
-  category!: string;
+  category_id!: number;
 
   @Column('float')
   amount!: number;
 
   @Column({ nullable: true })
   note!: string;
+
+  @ManyToOne(() => CategoryModel)
+  @JoinColumn({ name: 'category_id' })
+  category!: CategoryModel;
 }
